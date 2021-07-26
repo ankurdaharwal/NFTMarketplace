@@ -1,14 +1,14 @@
 import React from "react";
 import "./App.css";
 import "./index.css";
-import { Marketplace } from "./hardhat/Marketplace";
+import { Symfoni } from "./hardhat/SymfoniContext";
 import { NFTMarketplace } from "./components/NFTMarketplace";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Marketplace autoInit={true}>
+        <Symfoni autoInit={true}>
           <span>
             <h1>
               <img src={"nft.jpeg"} className="App-logo" alt="logo" />
@@ -17,7 +17,7 @@ function App() {
             </h1>
           </span>
           <NFTMarketplace></NFTMarketplace>
-        </Marketplace>
+        </Symfoni>
       </header>
     </div>
   );

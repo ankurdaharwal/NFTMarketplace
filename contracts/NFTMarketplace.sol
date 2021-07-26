@@ -103,7 +103,7 @@ contract NFTMarketplace is Ownable, NFTMarketplaceStorage {
 
         require(
             _duration >= MIN_BID_DURATION,
-            "The bid should last longer than 5 minutes"
+            "The bid should last longer than 5 minute"
         );
 
         require(
@@ -410,8 +410,8 @@ contract NFTMarketplace is Ownable, NFTMarketplaceStorage {
     }
 
     /**
-    * @dev Get an NFT token bid by index
-    * @param _tokenAddress - address of the NFT token
+    * @dev Get an ERC721 token bid by index
+    * @param _tokenAddress - address of the ERC721 token
     * @param _tokenId - uint256 of the token id
     * @param _index - uint256 of the index
     * @return bytes32 of the bid id

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NFTMarketplaceContext } from "../hardhat/Marketplace";
+import { NFTMarketplaceContext } from "../hardhat/SymfoniContext";
 import CopyText from "./CopyText";
 import {
   isValidNFTAddress,
@@ -45,7 +45,7 @@ export const NFTMarketplace: React.FC<Props> = () => {
       return;
     }
     if (nftMarketplace.instance) {
-      if (!bid || !nftAddress || !tokenId || !duration || !fingerprint) {
+      if (!bid || !nftAddress || !tokenId || !duration) {
         showErrorMessage("Please fill all fields");
         return;
       }
@@ -72,7 +72,7 @@ export const NFTMarketplace: React.FC<Props> = () => {
         return;
       }
       // validate fingerprint
-      if (!isValidFingerprint(fingerprint)) {
+      if (fingerprint && !isValidFingerprint(fingerprint)) {
         showErrorMessage(
           `Fingerprint ${fingerprint} is not a valid fingerprint.`
         );

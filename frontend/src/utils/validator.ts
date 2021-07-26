@@ -7,11 +7,11 @@ export const isValidBid = (bid: string) => {
 };
 
 export const isValidTokenId = (tokenId: string) => {
-  return tokenId.match(/^[0-9]+}$/);
+  return tokenId.match(/^[0-9]+$/);
 };
 
 export const isValidDuration = (duration: string) => {
-  return duration.match(/^[0-9]+}$/);
+  return duration.match(/^[0-9]+$/);
 };
 
 export const isValidFingerprint = (fingerprint: string) => {

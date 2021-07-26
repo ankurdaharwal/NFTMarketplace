@@ -3,6 +3,10 @@
 pragma solidity ^0.8.0;
 
 import "./NFTTokenInterface.sol";
+import "./NFTReceiver.sol";
+import "./NFTTokenMetadata.sol";
+import "./InterfaceDetector.sol";
+
 import "./Address.sol";
 import "./Strings.sol";
 
@@ -11,7 +15,7 @@ import "./Strings.sol";
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
  */
-abstract contract NFTToken is NFTTokenInterface {
+contract NFTToken is InterfaceDetector, NFTTokenInterface, NFTTokenMetadata {
     using Address for address;
     using Strings for uint256;
 
@@ -44,16 +48,18 @@ abstract contract NFTToken is NFTTokenInterface {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) pure external returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return
-            interfaceId == type(NFTTokenInterface).interfaceId;
+            interfaceId == type(NFTTokenInterface).interfaceId ||
+            interfaceId == type(NFTTokenMetadata).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev See {IERC721-balanceOf}.
      */
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        require(owner != address(0), "ERC721: balance query for the zero address");
+        require(owner != address(0), "NFTToken: balance query for the zero address");
         return _balances[owner];
     }
 
@@ -62,29 +68,29 @@ abstract contract NFTToken is NFTTokenInterface {
      */
     function ownerOf(uint256 tokenId) public view virtual override returns (address) {
         address owner = _owners[tokenId];
-        require(owner != address(0), "ERC721: owner query for nonexistent token");
+        require(owner != address(0), "NFTToken: owner query for nonexistent token");
         return owner;
     }
 
     /**
      * @dev See {IERC721Metadata-name}.
      */
-    function name() external view returns (string memory) {
+    function name() public view virtual override returns (string memory) {
         return _name;
     }
 
     /**
      * @dev See {IERC721Metadata-symbol}.
      */
-    function symbol() external view returns (string memory) {
+    function symbol() public view virtual override returns (string memory) {
         return _symbol;
     }
 
     /**
      * @dev See {IERC721Metadata-tokenURI}.
      */
-    function tokenURI(uint256 tokenId) external view returns (string memory) {
-        require(_exists(tokenId), "NFTTokenInterface: URI query for nonexistent token");
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
 
         string memory baseURI = _baseURI();
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
@@ -108,7 +114,7 @@ abstract contract NFTToken is NFTTokenInterface {
 
         require(
             msg.sender == owner || isApprovedForAll(owner, msg.sender),
-            "ERC721: approve caller is not owner nor approved for all"
+            "NFTToken: approve caller is not owner nor approved for all"
         );
 
         _approve(to, tokenId);
@@ -118,7 +124,7 @@ abstract contract NFTToken is NFTTokenInterface {
      * @dev See {IERC721-getApproved}.
      */
     function getApproved(uint256 tokenId) public view virtual override returns (address) {
-        require(_exists(tokenId), "ERC721: approved query for nonexistent token");
+        require(_exists(tokenId), "NFTToken: approved query for nonexistent token");
 
         return _tokenApprovals[tokenId];
     }
@@ -127,7 +133,7 @@ abstract contract NFTToken is NFTTokenInterface {
      * @dev See {IERC721-setApprovalForAll}.
      */
     function setApprovalForAll(address operator, bool approved) public virtual override {
-        require(operator != msg.sender, "ERC721: approve to caller");
+        require(operator != msg.sender, "NFTToken: approve to caller");
 
         _operatorApprovals[msg.sender][operator] = approved;
         emit ApprovalForAll(msg.sender, operator, approved);
@@ -192,7 +198,7 @@ abstract contract NFTToken is NFTTokenInterface {
      * - `from` cannot be the zero address.
      * - `to` cannot be the zero address.
      * - `tokenId` token must exist and be owned by `from`.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+     * - If `to` refers to a smart contract, it must implement {NFTReceiver-onNFTReceived}, which is called upon a safe transfer.
      *
      * Emits a {Transfer} event.
      */
@@ -203,7 +209,7 @@ abstract contract NFTToken is NFTTokenInterface {
         bytes memory _data
     ) internal virtual {
         _transfer(from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, _data), "ERC721: transfer to non ERC721Receiver implementer");
+        require(_checkOnNFTReceived(from, to, tokenId, _data), "NFTToken: transfer to non NFTReceiver implementer");
     }
 
     /**
@@ -226,7 +232,7 @@ abstract contract NFTToken is NFTTokenInterface {
      * - `tokenId` must exist.
      */
     function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
-        require(_exists(tokenId), "ERC721: operator query for nonexistent token");
+        require(_exists(tokenId), "NFTToken: operator query for nonexistent token");
         address owner = NFTToken.ownerOf(tokenId);
         return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
     }
@@ -237,7 +243,7 @@ abstract contract NFTToken is NFTTokenInterface {
      * Requirements:
      *
      * - `tokenId` must not exist.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+     * - If `to` refers to a smart contract, it must implement {NFTReceiver-onNFTReceived}, which is called upon a safe transfer.
      *
      * Emits a {Transfer} event.
      */
@@ -247,7 +253,7 @@ abstract contract NFTToken is NFTTokenInterface {
 
     /**
      * @dev Same as {xref-ERC721-_safeMint-address-uint256-}[`_safeMint`], with an additional `data` parameter which is
-     * forwarded in {IERC721Receiver-onERC721Received} to contract recipients.
+     * forwarded in {NFTReceiver-onNFTReceived} to contract recipients.
      */
     function _safeMint(
         address to,
@@ -256,8 +262,8 @@ abstract contract NFTToken is NFTTokenInterface {
     ) internal virtual {
         _mint(to, tokenId);
         require(
-            _checkOnERC721Received(address(0), to, tokenId, _data),
-            "ERC721: transfer to non ERC721Receiver implementer"
+            _checkOnNFTReceived(address(0), to, tokenId, _data),
+            "NFTToken: transfer to non NFTReceiver implementer"
         );
     }
 
@@ -274,8 +280,8 @@ abstract contract NFTToken is NFTTokenInterface {
      * Emits a {Transfer} event.
      */
     function _mint(address to, uint256 tokenId) internal virtual {
-        require(to != address(0), "ERC721: mint to the zero address");
-        require(!_exists(tokenId), "ERC721: token already minted");
+        require(to != address(0), "NFTToken: mint to the zero address");
+        require(!_exists(tokenId), "NFTToken: token already minted");
 
         _beforeTokenTransfer(address(0), to, tokenId);
 
@@ -325,8 +331,8 @@ abstract contract NFTToken is NFTTokenInterface {
         address to,
         uint256 tokenId
     ) internal virtual {
-        require(NFTToken.ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
-        require(to != address(0), "ERC721: transfer to the zero address");
+        require(NFTToken.ownerOf(tokenId) == from, "NFTToken: transfer of token that is not own");
+        require(to != address(0), "NFTToken: transfer to the zero address");
 
         _beforeTokenTransfer(from, to, tokenId);
 
@@ -351,7 +357,7 @@ abstract contract NFTToken is NFTTokenInterface {
     }
 
     /**
-     * @dev Internal function to invoke {IERC721Receiver-onERC721Received} on a target address.
+     * @dev Internal function to invoke {NFTReceiver-onNFTReceived} on a target address.
      * The call is not executed if the target address is not a contract.
      *
      * @param from address representing the previous owner of the given token ID
@@ -360,18 +366,18 @@ abstract contract NFTToken is NFTTokenInterface {
      * @param _data bytes optional data to send along with the call
      * @return bool whether the call correctly returned the expected magic value
      */
-    function _checkOnERC721Received(
+    function _checkOnNFTReceived(
         address from,
         address to,
         uint256 tokenId,
         bytes memory _data
     ) private returns (bool) {
         if (to.isContract()) {
-            try NFTTokenInterface(to).onERC721Received(msg.sender, from, tokenId, _data) returns (bytes4 retval) {
-                return retval == NFTTokenInterface.onERC721Received.selector;
+            try NFTReceiver(to).onERC721Received(msg.sender, from, tokenId, _data) returns (bytes4 retval) {
+                return retval == NFTReceiver.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC721: transfer to non ERC721Receiver implementer");
+                    revert("NFTToken: transfer to non NFTReceiver implementer");
                 } else {
                     assembly {
                         revert(add(32, reason), mload(reason))

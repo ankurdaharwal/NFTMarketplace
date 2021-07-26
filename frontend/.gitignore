@@ -11,6 +11,9 @@
 # production
 /build
 
+# hardhat
+/hardhat
+
 # misc
 .DS_Store
 .env.local

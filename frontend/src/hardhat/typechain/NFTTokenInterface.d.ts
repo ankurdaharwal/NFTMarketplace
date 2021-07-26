@@ -26,7 +26,6 @@ interface NFTTokenInterfaceInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
@@ -45,10 +44,6 @@ interface NFTTokenInterfaceInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "onERC721Received",
-    values: [string, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
@@ -75,10 +70,6 @@ interface NFTTokenInterfaceInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC721Received",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
@@ -180,22 +171,6 @@ export class NFTTokenInterface extends Contract {
       0: boolean;
     }>;
 
-    onERC721Received(
-      operator: string,
-      from: string,
-      tokenId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "onERC721Received(address,address,uint256,bytes)"(
-      operator: string,
-      from: string,
-      tokenId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -295,22 +270,6 @@ export class NFTTokenInterface extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  onERC721Received(
-    operator: string,
-    from: string,
-    tokenId: BigNumberish,
-    data: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "onERC721Received(address,address,uint256,bytes)"(
-    operator: string,
-    from: string,
-    tokenId: BigNumberish,
-    data: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   "ownerOf(uint256)"(
@@ -400,22 +359,6 @@ export class NFTTokenInterface extends Contract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    onERC721Received(
-      operator: string,
-      from: string,
-      tokenId: BigNumberish,
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "onERC721Received(address,address,uint256,bytes)"(
-      operator: string,
-      from: string,
-      tokenId: BigNumberish,
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -528,22 +471,6 @@ export class NFTTokenInterface extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    onERC721Received(
-      operator: string,
-      from: string,
-      tokenId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "onERC721Received(address,address,uint256,bytes)"(
-      operator: string,
-      from: string,
-      tokenId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -639,22 +566,6 @@ export class NFTTokenInterface extends Contract {
       owner: string,
       operator: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    onERC721Received(
-      operator: string,
-      from: string,
-      tokenId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "onERC721Received(address,address,uint256,bytes)"(
-      operator: string,
-      from: string,
-      tokenId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     ownerOf(
