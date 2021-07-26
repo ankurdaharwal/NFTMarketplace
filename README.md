@@ -13,11 +13,12 @@
 ## Run local node, compile & migrate (Deploy) Contracts
 - `yarn deploy` (Default network: local Hardhat development network)
 
+![](https://media.giphy.com/media/9l6z9MzXfHX9gKzbvU/giphy.gif)
+
 ## Start the DApp User Interface
 - `yarn start` [localhost:3000](http://localhost:3000)
 
-
-![](https://media.giphy.com/media/9l6z9MzXfHX9gKzbvU/giphy.gif)
+![](https://gyazo.com/0617fdc892b1c60ab8209e2ef53666d1)
 
 ```text
 It runs up a Hardhat node, compile contracts, generates typescript interfaces, creates React context and instantiates your contract instances and factories with frontend provider.
