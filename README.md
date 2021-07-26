@@ -18,7 +18,7 @@
 ## Start the DApp User Interface
 - `yarn start` [localhost:3000](http://localhost:3000)
 
-![](https://gyazo.com/0617fdc892b1c60ab8209e2ef53666d1)
+[![Image from Gyazo](https://i.gyazo.com/0617fdc892b1c60ab8209e2ef53666d1.gif)](https://gyazo.com/0617fdc892b1c60ab8209e2ef53666d1)
 
 ```text
 It runs up a Hardhat node, compile contracts, generates typescript interfaces, creates React context and instantiates your contract instances and factories with frontend provider.
