@@ -10,17 +10,12 @@
 ## Setup
 - `yarn`
 
-## Run local node
-- `yarn node`
-
-## Compile & migrate (Deploy) Contracts
+## Run local node, compile & migrate (Deploy) Contracts
 - `yarn deploy` (Default network: local Hardhat development network)
 
-## Run Tests
-- `yarn test`
+## Start the DApp User Interface
+- `yarn start` [localhost:3000](http://localhost:3000)
 
-1. Install deps with yarn `yarn`
-2. Start hardhat `yarn deploy`
 
 ![](https://media.giphy.com/media/9l6z9MzXfHX9gKzbvU/giphy.gif)
 
